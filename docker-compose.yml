@@ -1,0 +1,32 @@
+version: '3'
+
+# Serviços a serem colocados em containeres
+services:
+
+  # Database é um container a ser criado
+  bancodados:
+    image: 'postgres:latest'
+    ports:
+      #      port foward, redirecionamento de porta
+      #   porta da máquina : porta do container
+      - 15432:5432
+    environment:
+      #      variaveis de ambiente do container
+      - POSTGRES_PASSWORD=minhaSenha
+      - POSTGRES_USERNAME=meuUsuario
+    networks:
+      #      Rede que o container fará parte
+      - postgres-network
+    volumes:
+      #      Local de armazenamento de dados
+      #      Enviar dados externos para o armazenamento interno do container
+      - ${PWD}/db-data/:/var/lib/postgresql/data/
+
+  app:
+    image: gabrielfilomeno/hello-health:0.1
+    ports:
+      - 8080:8080
+
+networks:
+  postgres-network:
+    driver: bridge
